@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Emscripten-Generated Code</title>
+  </head>
+  <body onload="init()">
+<p>Carrying on from the
+  <a href="https://emscripten.org/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html">
+    Emscripten page</a> on binding c++ to javascript, here's a working (cough) example.
+</p>
+<p>having done:<br/>
+    <code>
+    python "C:\Program Files\Emscripten\emscripten\1.35.0\tools\webidl_binder.py" FooBar.idl glue<br/>
+    emcc  Foo.cpp Bar.cpp glueWrapper.cpp --post-js glue.js -o output.js  -s MODULARIZE=1 -s "EXPORT_NAME=""FooBar""<br/>
+    </code><br/>
+
+    you can now invoke Foo and Bar from javascript like so:<br/>
+
+    <code>
+        var userVal = window.prompt("enter a number", "42");<br/>
+        if (userVal != null)<br/>
+        {<br/>
+          var f = new FooBar;<br/>
+          var ff = new f.Foo();<br/>
+          ff.setVal(userVal);<br/>
+          alert(ff.getVal());<br/>
+<br/>
+          var fb = new f.Bar(ff.getVal());<br/>
+          fb.doSomething();<br/>
+        }<br/>
+    </code>
+    </p>
+    <button onclick="init();">another go?</button>
+    <script async type="text/javascript" src="output.js"></script>
+    <script type="text/javascript">
+    function init()
+    {
+        var userVal = window.prompt("enter a number", "42");
+        if (userVal != null)
+        {
+          var f = new FooBar;
+          var ff = new f.Foo();
+          ff.setVal(userVal);
+          alert(ff.getVal());
+
+          var fb = new f.Bar(ff.getVal());
+          fb.doSomething();
+        }
+    }
+    </script>
+  </body>
+</html>
